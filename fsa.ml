@@ -29,10 +29,13 @@ let add x (s, sym, s', a) =
   ) x.states
 
 let step x sym =
-  (* TODO handle the default transition *)
-  let s', a = List.assoc sym x.states.(x.state) in
-  x.state <- s';
-  a
+  try
+    let s', a = List.assoc sym x.states.(x.state) in
+    x.state <- s';
+    a
+  with Not_found ->
+    x.state <- 0;
+    []
 
 module Int = struct
   type t = int
@@ -63,5 +66,5 @@ let closure x i =
     | Some bad -> `Invalid bad
     | None -> `Visited (S.elements !visited)
 
-(* TODO remove useless states? *)
+(* TODO remove useless states? use a map for the states we rename *)
 (* TODO save as a list of tuples with the biggest index first to avoid O(n^2) *)
