@@ -6,15 +6,16 @@ type ('sym, 'a) t = {
 }
 
 let create () = {
-  states = [| |];
+  states = [| [] |];
   state = 0;
 }
 
 let add x (s, sym, s', a) =
   let l = Array.length x.states in
-  if s >= l then
+  let m = 1 + max (max s s') l in
+  if m > l then
     (* grow: copy the existing states and fill the rest with empty ones *)
-    x.states <- Array.init (s-1) (fun i -> if i < l then x.states.(i) else []);
+    x.states <- Array.init m (fun i -> if i < l then x.states.(i) else []);
   x.states <- Array.mapi (fun i st ->
     if i <> s then
       (* we don't want to change any other state than the ith *)
