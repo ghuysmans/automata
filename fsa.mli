@@ -1,3 +1,4 @@
+type state = int
 type ('sym, 'a) t
 (* ('sym, 'a) t represents an automaton with 'sym symbols and 'a actions.
  * It won't block but just return to its initial state (implicitly 0).
@@ -11,7 +12,5 @@ val add: ('sym, 'a) t -> (int * 'sym * int * 'a list) -> unit
 val step: ('sym, 'a) t -> 'sym -> 'a list
 (* step x t processes an input t and returns the corresponding actions *)
 
-val check: ('sym, 'a) t -> bool
-(* tests whether the FSA is valid (no reference to any non-existing state *)
-
-(* TODO repr with a tuple list, the first must contain the highest state id *)
+val closure: _ t -> state -> [> `Invalid of state | `Visited of state list ]
+(* closure x i computes the transitive closure of x starting from state i. *)

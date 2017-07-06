@@ -16,6 +16,7 @@ let add x (s, sym, s', a) =
   if m > l then
     (* grow: copy the existing states and fill the rest with empty ones *)
     x.states <- Array.init m (fun i -> if i < l then x.states.(i) else []);
+  (* update *)
   x.states <- Array.mapi (fun i st ->
     if i <> s then
       (* we don't want to change any other state than the ith *)
@@ -28,6 +29,7 @@ let add x (s, sym, s', a) =
   ) x.states
 
 let step x sym =
+  (* TODO handle the default transition *)
   let s', a = List.assoc sym x.states.(x.state) in
   x.state <- s';
   a
@@ -38,19 +40,28 @@ module Int = struct
 end
 module S = Set.Make(Int)
 
-let check x =
+let closure x i =
   let visited = ref S.empty in
   let l = Array.length x.states in
   let rec dfs i =
     if i<0 || i>=l then
       (* out of bounds *)
-      false
+      Some i
     else if S.mem i !visited then
       (* already checked, we don't want to loop forever *)
-      true
+      None
     else (
       visited := S.add i !visited;
       List.map (fun (_, (i', _)) -> dfs i') x.states.(i) |>
-      List.fold_left (&&) true
+      List.fold_left (fun a b -> match a with
+        | Some _ -> a
+        | None -> b
+      ) None
     ) in
-  dfs 0
+  (* traverse the graph *)
+  match dfs i with
+    | Some bad -> `Invalid bad
+    | None -> `Visited (S.elements !visited)
+
+(* TODO remove useless states? *)
+(* TODO save as a list of tuples with the biggest index first to avoid O(n^2) *)
