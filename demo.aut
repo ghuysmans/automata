@@ -1,6 +1,6 @@
 (* transition macros *)
-(* nl and digit are defined automatically *)
 vowel='a','e','i','o','u','y'
+digit='0'-'9'
 
 (* action macros *)
 T=broadcast 2000 "tick"
@@ -12,5 +12,6 @@ C=broadcast 2000 "clap"
 		vowel -> 0; C
 
 typing:	digit -> typing; T
-		nl -> 0; D
+		'\n' -> 0; D
 		vowel -> typing; C
+
