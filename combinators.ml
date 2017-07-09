@@ -1,15 +1,23 @@
-type ('sym, 'a) t =
-  | Simple of ('sym, 'a) Fsa.t
-  | First of ('sym, 'a) t list
-  | Both of ('sym, 'a) t list
+type 'a t =
+  | Simple of 'a
+  | Sequence of 'a t list
+  | Union of 'a t list
+
+let dump t =
+  let rec f = function
+    | Simple s -> s
+    | Sequence l -> "(" ^ String.concat "; " (List.map f l) ^ ")"
+    | Union l -> "(" ^ String.concat " || " (List.map f l) ^ ")" in
+  Printf.printf "%s\n" (f t);
+  t
 
 let rec step test x t = match x with
   | Simple x ->
     Fsa.step test x t
-  | Both l ->
+  | Union l ->
     List.map (fun x -> step test x t) l |>
     List.concat
-  | First l ->
+  | Sequence l ->
     List.fold_left (fun acc x ->
       if acc = [] then
         step test x t

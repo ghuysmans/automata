@@ -14,3 +14,6 @@ val step: ('sym -> 'syms -> bool) -> ('syms, 'a) t -> 'sym -> 'a list
 
 val closure: _ t -> state -> [> `Invalid of state | `Visited of state list ]
 (* closure x i computes the transitive closure of x starting from state i. *)
+
+val clone: ('sym, 'a) t -> ('sym, 'a) t
+(* clone x clones the given automaton (and its current state) *)
