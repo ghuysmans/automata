@@ -4,7 +4,6 @@ type t =
 
 let run = function
   | Print s ->
-    Printf.printf "%s\n" s
+    print_endline s
   | Broadcast (port, s) ->
-    Udp.send port s;
-    Printf.fprintf stderr "%s -> UDP %d\n" s port
+    Udp.send port s
