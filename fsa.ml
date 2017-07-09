@@ -18,19 +18,18 @@ let add x (s, sym, s', a) =
     x.states <- Array.init m (fun i -> if i < l then x.states.(i) else []);
   (* update *)
   x.states <- Array.mapi (fun i st ->
+    (* FIXME test intersections? *)
     if i <> s then
       (* we don't want to change any other state than the ith *)
       st
-    else if List.mem_assoc sym st then
-      failwith ("two transitions with the same symbol at " ^ string_of_int i)
     else
       (* add the transition *)
       (sym, (s', a)) :: st
   ) x.states
 
-let step x sym =
+let step test x sym =
   try
-    let s', a = List.assoc sym x.states.(x.state) in
+    let _, (s', a) = List.find (fun (s, _) -> test sym s) x.states.(x.state) in
     x.state <- s';
     a
   with Not_found ->
