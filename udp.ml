@@ -20,7 +20,7 @@ let send port s =
       d in
   Unix.sendto client s 0 (String.length s) [] dest |> ignore
 
-let server port f =
+let server port size f =
   let open Unix in
   let ai =
     let flags = [AI_PASSIVE; AI_SOCKTYPE SOCK_DGRAM] in
@@ -28,11 +28,9 @@ let server port f =
   ai |> List.iter (fun a ->
     let fd = socket a.ai_family a.ai_socktype a.ai_protocol in
     bind fd a.ai_addr;
-    let size = 16 in
     let buffer = Bytes.create size in
     while true do
-      let n = recv fd buffer 0 (size - 1) [] in
-      Bytes.set buffer (n + 1) '\x00';
-      Bytes.to_string buffer |> f
+      let n = recv fd buffer 0 size [] in
+      Bytes.sub_string buffer 0 n |> f
     done
   )
