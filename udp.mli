@@ -1,4 +1,2 @@
-type t
-
-val create: int -> t
-val send: t -> string -> unit
+val send: int -> string -> unit
+val server: int -> (string -> unit) -> unit
