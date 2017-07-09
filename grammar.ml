@@ -18,3 +18,4 @@ type top =
   | SymbolDefinition of string * symbols
   | ActionDefinition of string * action list
   | StateDefinition of state_id * transition list
+  | Empty

@@ -17,17 +17,17 @@
 let lid = ['a'-'z']['a'-'z' '0'-'9' '_' '\'']*
 let uid = ['A'-'Z']['A'-'Z' '0'-'9' '_' '\'']*
 let num = '0' | '-'? ['1'-'9']['0'-'9']*
-let newline = ['\n']
+let newline = '\n'
 
 rule top = parse
 | [' ' '\t'] { top lexbuf }
-| newline { next_line lexbuf; top lexbuf }
+| newline { next_line lexbuf; Parser.NL }
 | "print" { Parser.PRINT }
+| "'" [^'\''] "'" as s { Parser.CHAR s.[1] }
 | "\"" [^'"']* "\"" as s { Parser.STRING s } (* FIXME *)
 | "broadcast" | "bc" { Parser.BROADCAST }
 | lid as l { Parser.LOWER_ID l }
 | "=" { Parser.EQUAL }
-| "'" [^'\''] "'" as s { Parser.CHAR s.[1] }
 | "," { Parser.COMMA }
 | uid as l { Parser.UPPER_ID l }
 | num as n { Parser.INT (int_of_string n) }

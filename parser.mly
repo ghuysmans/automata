@@ -11,6 +11,7 @@
 %token SEMICOLON
 %token TO
 %token ARROW
+%token NL
 %token EOF
 
 %start <Grammar.top> top
@@ -39,14 +40,15 @@ state:
 | n = INT { Grammar.StateIndex n }
 
 transition:
-| s = symbols ; ARROW ; d = state ; SEMICOLON ; a = actions { Grammar.SymbolUnion s, d, a }
+| s = symbols ; ARROW ; d = state ; SEMICOLON ; a = actions ; NL { Grammar.SymbolUnion s, d, a }
 
 transitions:
 | t = transition { [t] }
 | t = transition ; l = transitions { t :: l }
 
 top:
-| i = LOWER_ID ; EQUAL ; s = symbols { Grammar.SymbolDefinition (i, Grammar.SymbolUnion s) }
-| i = UPPER_ID ; EQUAL ; a = actions { Grammar.ActionDefinition (i, a) }
-| s = state ; COLON ; t = transitions { Grammar.StateDefinition (s, t) }
+| NL { Grammar.Empty (* FIXME? *) }
+| i = LOWER_ID ; EQUAL ; s = symbols ; NL { Grammar.SymbolDefinition (i, Grammar.SymbolUnion s) }
+| i = UPPER_ID ; EQUAL ; a = actions ; NL { Grammar.ActionDefinition (i, a) }
+| s = state ; COLON ; t = transitions ; NL { Grammar.StateDefinition (s, t) }
 | EOF { raise End_of_file }

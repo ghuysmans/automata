@@ -10,6 +10,7 @@ C=broadcast 2000 "clap"
 (* 0 is the initial state *)
 0:		digit -> typing; T, T
 		vowel -> 0; C
+
 typing:	digit -> typing; T
 		nl -> 0; D
 		vowel -> typing; C
