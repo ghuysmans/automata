@@ -1,0 +1,15 @@
+(* transition macros *)
+(* nl and digit are defined automatically *)
+vowel='a','e','i','o','u','y'
+
+(* action macros *)
+T=broadcast 2000 "tick"
+D=broadcast 2000 "ding"
+C=broadcast 2000 "clap"
+
+(* 0 is the initial state *)
+0:		digit -> typing; T, T
+		vowel -> 0; C
+typing:	digit -> typing; T
+		nl -> 0; D
+		vowel -> typing; C
