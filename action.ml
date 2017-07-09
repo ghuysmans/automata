@@ -3,9 +3,5 @@ type t =
   | Broadcast of int * string
 
 let run = function
-  | Print s -> print_endline s
-
-let run_step x sym =
-  Fsa.step x sym |>
-  List.iter run;
-  x
+  | Print s -> Printf.printf "%s\n" s
+  | Broadcast (p, s) -> Printf.fprintf stderr "%s -> UDP %d\n" s p
