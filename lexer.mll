@@ -1,6 +1,6 @@
 {
-  exception IllegalCharacter of char
-  exception UnterminatedComment
+  exception Unterminated_comment
+  exception Unterminated_string
 
   let next_line lexbuf =
     let pos = lexbuf.Lexing.lex_curr_p in
@@ -24,7 +24,11 @@ rule top = parse
 | newline { next_line lexbuf; Parser.NL }
 | "print" { Parser.PRINT }
 | "'" [^'\''] "'" as s { Parser.CHAR s.[1] }
-| "\"" [^'"']* "\"" as s { Parser.STRING s } (* FIXME *)
+| "'\\n'" { Parser.CHAR '\n' }
+| "'\\t'" { Parser.CHAR '\t' }
+| "'\\\\'" { Parser.CHAR '\\' }
+| "'\\''" { Parser.CHAR '\'' }
+| "\"" { Parser.STRING (string lexbuf) }
 | "broadcast" | "bc" { Parser.BROADCAST }
 | lid as l { Parser.LOWER_ID l }
 | "=" { Parser.EQUAL }
@@ -47,5 +51,15 @@ and comment = parse
   ) }
 | newline { next_line lexbuf; comment lexbuf }
 | "(*" { incr inner_comments_number; comment lexbuf }
-| eof { raise UnterminatedComment }
+| eof { raise Unterminated_comment }
 | _ { comment lexbuf }
+
+(* FIXME inefficient but easy to read *)
+and string = parse
+| "\\n" { "\n" ^ string lexbuf }
+| "\\t" { "\t" ^ string lexbuf }
+| "\\\\" { "\\" ^ string lexbuf }
+| "\\\"" { "\"" ^ string lexbuf }
+| "\"" { "" }
+| eof { raise Unterminated_string }
+| _ as c { String.make 1 c ^ string lexbuf }
