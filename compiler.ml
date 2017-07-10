@@ -61,17 +61,14 @@ let parse lexbuf =
         actions := (n, expand_actions !actions a) :: !actions
       | Grammar.StateDefinition (s, t) ->
         if List.mem_assoc s !states then
-          failwith @@ "state " ^ string_of_state s ^ " has been defined earlier"
-        else
-          let expand (s, i, a) =
-            expand_symbol !symbols s,
-            i,
-            expand_actions !actions a in
-          let t = List.map expand t in
-          states := (s, t) :: !states;
-          max_state := max (next_max_state !max_state t) (match s with
-            | Grammar.StateName _ -> 0 (* neutral *)
-            | Grammar.StateIndex n -> n);
+          failwith @@ "can't redefine state " ^ string_of_state s;
+        let expand (s, i, a) =
+          expand_symbol !symbols s, i, expand_actions !actions a in
+        let t = List.map expand t in
+        states := (s, t) :: !states;
+        max_state := max (next_max_state !max_state t) (match s with
+          | Grammar.StateName _ -> 0 (* neutral *)
+          | Grammar.StateIndex n -> n);
       | Grammar.Empty ->
         ()
     done
