@@ -51,4 +51,5 @@ top:
 | i = LOWER_ID ; EQUAL ; s = symbols ; NL { Grammar.SymbolDefinition (i, Grammar.SymbolUnion s) }
 | i = UPPER_ID ; EQUAL ; a = actions ; NL { Grammar.ActionDefinition (i, a) }
 | s = state ; COLON ; t = transitions ; NL { Grammar.StateDefinition (s, t) }
+| s = state ; COLON ; t = transitions ; EOF { Grammar.StateDefinition (s, t) }
 | EOF { raise End_of_file }

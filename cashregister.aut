@@ -10,4 +10,3 @@ D=broadcast 2000 "ding"
 
 typing:	digit -> typing; T
 		'\n' -> 0; D
-
