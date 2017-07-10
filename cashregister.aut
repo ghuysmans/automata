@@ -1,0 +1,13 @@
+(* transition macros *)
+digit='0'-'9'
+
+(* action macros *)
+T=broadcast 2000 "tick"
+D=broadcast 2000 "ding"
+
+(* 0 is the initial state *)
+0:		digit -> typing; T
+
+typing:	digit -> typing; T
+		'\n' -> 0; D
+
