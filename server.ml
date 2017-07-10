@@ -33,7 +33,7 @@ let () =
       )
       else if String.length s > 1 && s.[0] = 'r' then
         match !t with
-        | Some t' -> t := Some (run_step t' s.[1])
+        | Some t' -> t := Some (Automata.run_step t' s.[1])
         | None -> ()
       else
         shout "wut?"
