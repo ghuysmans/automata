@@ -1,6 +1,7 @@
 # automata
 This is a kind of generic FSA implementation.
-It was written to handle keystrokes, so there are no accepting states but each transition can trigger actions:
+It was written to handle keystrokes, so there are no accepting states
+but each transition can trigger actions:
 - printing constant strings in the terminal: `print "hi!"`
 - broadcasting the same kind of strings in UDP: `bc 2000 "HELLO EVERYONE"`
 
@@ -8,8 +9,19 @@ Combinators allow you prioritizing automata:
 - `a < b` will produce `b`'s actions when `a` doesn't
 - `a || b` will produce (at each step) actions from `a` and `b`, in this order
 
-# Examples
-## A cash register simulator
+## Tools
+- `server.ml` is a UDP server (for pranks, etc.)
+- `run.ml` is a combinator tester
+- `dot.ml` converts FSAs to graphs (see _Examples_ below)
+
+## Building
+```
+opam install ocamlbuild menhir
+ocamlbuild -lib unix -use-menhir dot.byte run.byte server.byte
+```
+
+## Examples
+### A cash register simulator
 Running
 ```
 ./dot.byte cashregister.aut |dot -Tpng >cashregister.png
