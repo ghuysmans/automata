@@ -44,7 +44,8 @@ let assign_ids (states, max) =
   let f (i, t) =
     let assign_in_transition (s, i', a) = s, assign i', a in
     assign i, List.map assign_in_transition t in
-  List.map f states, !assignments
+  let states = List.map f states in
+  states, !assignments
 
 let parse lexbuf =
   let max_state = ref 0 in (* last index *)
