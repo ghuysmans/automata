@@ -66,6 +66,26 @@ let closure x i =
     | None -> `Visited (S.elements !visited)
 
 (* TODO remove useless states? use a map for the states we rename *)
-(* TODO save as a list of tuples with the biggest index first to avoid O(n^2) *)
 
 let clone {states; state} = {states; state}
+
+let dot string_of_action string_of_symbol ch assignments {states; _} =
+  Printf.fprintf ch "digraph {\n";
+  let pr_transition i (s, (i', a)) =
+    let actions = List.map string_of_action a |> String.concat ", " in
+    (* FIXME escape *)
+    Printf.fprintf ch "%d -> %d [label=\"%s : %s\"];\n"
+      i i' (string_of_symbol s) actions in
+  let pr_state i t =
+    if t <> [] then
+      Printf.fprintf ch "%d;\n" i;
+    List.iter (pr_transition i) t in
+  let pr_assignment (n, i) =
+    (* FIXME escape *)
+    Printf.fprintf ch "\"%s\" [shape=rectangle];\n" n;
+    Printf.fprintf ch "\"%s\" -> %d;\n" n i in
+  Array.iteri pr_state states;
+  List.iter pr_assignment assignments;
+  Printf.fprintf ch "}\n"
+
+(* TODO save as a list of tuples with the biggest index first to avoid O(n^2) *)

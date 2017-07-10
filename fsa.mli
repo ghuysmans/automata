@@ -17,3 +17,8 @@ val closure: _ t -> state -> [> `Invalid of state | `Visited of state list ]
 
 val clone: ('sym, 'a) t -> ('sym, 'a) t
 (* clone x clones the given automaton (and its current state) *)
+
+val dot:
+  ('a -> string) -> ('sym -> string) ->
+  out_channel -> (string * int) list -> ('sym, 'a) t -> unit
+(* dot ac sc ch as x represents the given automaton in the dot language *)

@@ -3,8 +3,6 @@ let compile s =
     let ch = open_in fn in
     let a, assignments = Lexing.from_channel ch |> Compiler.compile in
     close_in ch;
-    Printf.printf "compiled %s:\n" fn;
-    List.iter (fun (n, i) -> Printf.printf "%s -> %d\n" n i) assignments;
     a in
   let rec convert = function
     | Combinators.Simple fn -> Combinators.Simple (compile_automaton fn)
